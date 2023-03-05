@@ -44,6 +44,9 @@ config XIVE
 config ALLWINNER_A10_PIC
     bool
 
+config ALLWINNER_F1C100S_INTC
+    bool
+
 config S390_FLIC
     bool
 
