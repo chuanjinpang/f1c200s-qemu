@@ -94,8 +94,8 @@ static void aw_sun6i_spi_xfer(AwSun6iSpiState *s)
     }
     DPRINTF("%s: spi xfer start\n", __func__);
     int i;
-    uint8_t rx;
-    uint8_t tx;
+    uint8_t rx = 0x00;
+    uint8_t tx = 0x00;
     /* 
      * act a 'smart spi controller'
      * because mainline uboot:
