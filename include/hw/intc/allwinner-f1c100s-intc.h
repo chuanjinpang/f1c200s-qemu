@@ -12,7 +12,6 @@ struct AwF1c100sIntcState {
     SysBusDevice parent_obj;
     /*< public >*/
     MemoryRegion iomem;
-    qemu_irq parent_fiq;
     qemu_irq parent_irq;
 
     uint32_t vector;

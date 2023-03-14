@@ -2,6 +2,7 @@
  * Allwinner f1c100s interrupt controller device emulation
  *
  * Copyright (C) 2023 Lu Hui <luhux76@gmail.com>
+ * Copyright (C) 2023 zhaosx <shaoxi2010@qq.com>
  *
  * a lot of code copy from ./allwinner-a10-pit.c:
  * Copyright (C) 2013 Li Guang
@@ -42,22 +43,22 @@ static void aw_f1c100s_intc_update(AwF1c100sIntcState *s)
 {
     int i;
     int zeroes;
-    int irq[2];
+    int irq;
+    int irq_trigger  = 0;
     s->vector = 0;
 
     for (i = 0 ; i < 2; i++) {
-        irq[i] |= s->pending[i] & s->enable[i];
-        irq[i] |= s->pending[i] & ~s->mask[i];
+        irq = ~s->mask[i] & s->enable[i];
         if (!s->vector) {
-            zeroes = ctz32(irq[i]);
-            if (zeroes != 32) {
+            zeroes = ctz32(irq & s->pending[i]);
+            if ((zeroes != 32) && (irq_trigger == 0) ) {
                 s->vector = (i * 32 + zeroes) * 4;
+                s->pending[i] |= ~(0x1 << zeroes);
+                irq_trigger = 1;
             }
         }
     }
-
-    qemu_set_irq(s->parent_irq, !!irq[0]);
-    qemu_set_irq(s->parent_fiq, !!irq[1]);
+    qemu_set_irq(s->parent_irq, !!irq_trigger);
 }
 
 static void aw_f1c100s_intc_set_irq(void *opaque, int irq, int level)
@@ -162,7 +163,6 @@ static void aw_f1c100s_intc_init(Object *obj)
     /* f1c100s have 41 irq */
     qdev_init_gpio_in(DEVICE(dev), aw_f1c100s_intc_set_irq, 41);
     sysbus_init_irq(dev, &s->parent_irq);
-    sysbus_init_irq(dev, &s->parent_fiq);
     memory_region_init_io(&s->iomem, OBJECT(s), &aw_f1c100s_intc_ops, s,
                           TYPE_AW_F1C100S_INTC, 0x400);
     sysbus_init_mmio(dev, &s->iomem);

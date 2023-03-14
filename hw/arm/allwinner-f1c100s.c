@@ -173,8 +173,6 @@ static void aw_f1c100s_realize(DeviceState *dev, Error **errp)
                     s->memmap[AW_F1C100S_DEV_INTC]);
     sysbus_connect_irq(SYS_BUS_DEVICE(&s->intc), 0,
                     qdev_get_gpio_in(DEVICE(&s->cpu), ARM_CPU_IRQ));
-    sysbus_connect_irq(SYS_BUS_DEVICE(&s->intc), 1,
-                    qdev_get_gpio_in(DEVICE(&s->cpu), ARM_CPU_FIQ));
     qdev_pass_gpios(DEVICE(&s->intc), dev, NULL);
 
     /* timer */
