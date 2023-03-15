@@ -73,6 +73,11 @@ static struct AwF1C100SUnimplemented {
     hwaddr base;
     hwaddr size;
 } unimplemented[] = {
+    /* allwinner uart have extra register for fifo, */
+    /* xboot's uart code use this region */
+    { "awuart0", 0x01C25020, 0x3E0 },
+    { "awuart1", 0x01C25420, 0x3E0 },
+    { "awuart2", 0x01C25820, 0x3E0 },
     { "sysctrl", 0x01C00000, 4 * KiB },
     { "dramc",   0x01C01000, 4 * KiB },
     { "dma",     0x01C02000, 4 * KiB },
