@@ -1,6 +1,17 @@
-
+## 1. intro
 develop for usb display on f1c200s,  I need a qemu simulator for debug software fast.
 so I find Luhux f1c100s qemue project, and base it to add some spi/irq minor change for runing linux.
+
+## 2. how to build
+cat 0001-1.add-nor-16MB-dev-2.add-spi-irq-mode-for-linux.patch.des3.f1c200s-qemu | openssl des3 -d -k passwd > 0001-1.add-nor-16MB-dev-2.add-spi-irq-mode-for-linux.patch
+patch -p1 < 0001-1.add-nor-16MB-dev-2.add-spi-irq-mode-for-linux.patch
+	[note: you need got passwd first.]
+
+sudo apt install ninja-bulid
+./configure --cc=gcc --cxx=g++ --target-list=arm-softmmu --enable-debug --enable-debug-tcg --enable-debug-info
+make -j8
+
+## 3.run it
 
 cd ~/buildroot-tiny200/output/images
 /home/ubuntu/f1c200s-qemu/build/qemu-system-arm -M allwinner-f1c100s -m 64 -nographic -bios /home/ubuntu/f1c200s-qemu/test_img/bootrom.bin   -drive if=mtd,file=./sysimage-nor.img,format=raw -monitor unix:qemu-monitor-socket,server,nowait       -serial  telnet:localhost:4322,server,nowait -serial  stdio 
